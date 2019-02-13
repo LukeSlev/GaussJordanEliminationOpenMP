@@ -23,8 +23,14 @@ DEBUGFLAG := -ggdb
 CC := gcc
 # ------------------------------------------------------------
 
-default: $(headers) main.o
-	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main server.o
+default: $(headers) main.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main main.o Lab3IO.o
+
+main1: $(headers) main1.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main1 main1.o Lab3IO.o
+
+main2: $(headers) main2.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main2 main2.o Lab3IO.o
 
 serialtester: serialtester.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o serialtester serialtester.o Lab3IO.o
@@ -35,8 +41,14 @@ datagen: datagen.o Lab3IO.o
 main.o: main.c
 	$(CC) $(CFLAGS) main.c -c
 
+main1.o: main1.c
+	$(CC) $(CFLAGS) main1.c -c
+
+main2.o: main2.c
+	$(CC) $(CFLAGS) main2.c -c
+
 datagen.o: datagen.c
-	$(CC) $(CFLAGS) datagen -c
+	$(CC) $(CFLAGS) datagen.c -c
 
 serialtester.o: serialtester.c
 	$(CC) $(CFLAGS) serialtester.c -c
@@ -51,4 +63,4 @@ tar:
 	gzip $(target).tar
 
 clean:
-	rm *.o main
+	rm *.o main main1 main2 serialtester datagen
