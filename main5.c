@@ -11,7 +11,7 @@ void swap_row(double ***A, int k, int idx, int size);
 int elimination(int num_count) {
   double ** A;
   int i,j,k;
-  int l, max, idx;
+  int l, local_max, local_idx, max, idx;
   int rows, cols;
   double temp;
   double start, finished;
@@ -30,22 +30,38 @@ int elimination(int num_count) {
 
   GET_TIME(start);
 
+    printf("Before Gaussian\n\n");
+    for (i = 0; i < rows; ++i){
+        for (j = 0; j < cols; ++j){
+            printf("%f\t", A[index[i]][j]);
+        }
+        printf("\n");
+    }
+
   // Gaussian
-  #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(k,j,i,temp,l)
+  #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(j,i,local_max,temp,l,k,local_idx)
   {
     for (k=0;k<rows-1;k++) {
       max=0;
       idx=0;
       #pragma omp for
       for (l=k;l<rows;l++){
+        if (A[index[l]][k] * A[index[l]][k] > max ) {
+          local_idx = l;
+          local_max = A[index[l]][k] * A[index[l]][k];
+        }
+      }
+
+      if (local_max > max) {
         #pragma omp critical
         {
-          if (A[index[l]][k] * A[index[l]][k] > max ) {
-            idx = l;
-            max = A[index[l]][k] * A[index[l]][k];
+          if (local_max > max) {
+            max = local_max;
+            idx = local_idx;
           }
         }
       }
+      #pragma omp barrier
     
       #pragma omp single
       {
@@ -55,6 +71,17 @@ int elimination(int num_count) {
             index[k] = l;
         }
       }
+
+        #pragma omp single
+        {
+        printf("After swap\n\n");
+        for (i = 0; i < rows; ++i){
+            for (j = 0; j < cols; ++j){
+                printf("%f\t", A[index[i]][j]);
+            }
+            printf("\n");
+        }
+        }
 
       #pragma omp for
       for (i=k+1;i<rows;i++) {

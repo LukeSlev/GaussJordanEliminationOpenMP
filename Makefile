@@ -38,6 +38,9 @@ main3: $(headers) main3.o Lab3IO.o
 main4: $(headers) main4.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main4 main4.o Lab3IO.o
 
+main5: $(headers) main5.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main5 main5.o Lab3IO.o
+
 serialtester: serialtester.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o serialtester serialtester.o Lab3IO.o -lm
 
@@ -58,6 +61,9 @@ main3.o: main3.c
 
 main4.o: main4.c
 	$(CC) $(LDFLAGS) $(CFLAGS) main4.c -c
+
+main5.o: main5.c
+	$(CC) $(LDFLAGS) $(CFLAGS) main5.c -c
 
 datagen.o: datagen.c
 	$(CC) $(CFLAGS) datagen.c -c

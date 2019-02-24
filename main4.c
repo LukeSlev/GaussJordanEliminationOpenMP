@@ -30,6 +30,14 @@ int elimination(int num_count) {
 
   GET_TIME(start);
 
+  printf("Before Gaussian\n\n");
+  for (i = 0; i < rows; ++i){
+      for (j = 0; j < cols; ++j){
+          printf("%f\t", A[index[i]][j]);
+      }
+      printf("\n");
+  }
+
   // Gaussian
   #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(k,j,i,temp,l)
   {
@@ -49,6 +57,14 @@ int elimination(int num_count) {
             l = index[idx];
             index[idx] = index[k];
             index[k] = l;
+        }
+
+        printf("After swap\n\n");
+        for (i = 0; i < rows; ++i){
+            for (j = 0; j < cols; ++j){
+                printf("%f\t", A[index[i]][j]);
+            }
+            printf("\n");
         }
       }
 
