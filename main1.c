@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<pthread.h>
+#include<omp.h>
 #include<math.h>
 
 #include "Lab3IO.h"
