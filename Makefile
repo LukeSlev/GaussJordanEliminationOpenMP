@@ -13,7 +13,7 @@
 # ------------------------------------------------------------
 
 target := lab3
-allFiles := Makefile timer.h datagen.c Lab3IO.c Lab3IO.h serialtester.c main.c
+allFiles := Makefile timer.h datagen.c Lab3IO.c Lab3IO.h serialtester.c main.c main1.c main2.c main3.c main4.c
 objects :=
 headers := timer.h Lab3IO.h
 CFLAGS :=  -Wall -lm
@@ -75,4 +75,4 @@ tar:
 	gzip $(target).tar
 
 clean:
-	rm *.o main main1 main2 serialtester datagen
+	rm *.o main main1 main2 main3 main4 serialtester datagen

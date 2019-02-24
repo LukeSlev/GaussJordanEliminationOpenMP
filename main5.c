@@ -34,17 +34,21 @@ int elimination(int num_count) {
   #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(k,j,i,temp,l)
   {
     for (k=0;k<rows-1;k++) {
+      max=0;
+      idx=0;
+      #pragma omp for
+      for (l=k;l<rows;l++){
+        #pragma omp critical
+        {
+          if (A[index[l]][k] * A[index[l]][k] > max ) {
+            idx = l;
+            max = A[index[l]][k] * A[index[l]][k];
+          }
+        }
+      }
+    
       #pragma omp single
       {
-        max=0;
-        idx=0;
-        for (l=k;l<rows;l++){
-            if (A[index[l]][k] * A[index[l]][k] > max ) {
-              idx = l;
-              max = A[index[l]][k] * A[index[l]][k];
-            }
-        }
-      
         if (idx != k)/*swap*/{
             l = index[idx];
             index[idx] = index[k];
@@ -53,12 +57,12 @@ int elimination(int num_count) {
       }
 
       #pragma omp for
-        for (i=k+1;i<rows;i++) {
-            temp = A[index[i]][k] / A[index[k]][k];
-            for (j=k;j<rows+1;j++){
-                A[index[i]][j] = A[index[i]][j] - temp * A[index[k]][j];
-            }
-        }
+      for (i=k+1;i<rows;i++) {
+          temp = A[index[i]][k] / A[index[k]][k];
+          for (j=k;j<rows+1;j++){
+              A[index[i]][j] = A[index[i]][j] - temp * A[index[k]][j];
+          }
+      }
     }
     
     // PrintMat(A,rows,cols);
