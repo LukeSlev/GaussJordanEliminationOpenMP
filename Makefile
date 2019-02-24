@@ -13,7 +13,7 @@
 # ------------------------------------------------------------
 
 target := lab3
-allFiles := Makefile timer.h datagen.c Lab3IO.c Lab3IO.h serialtester.c main.c main1.c main2.c main3.c main4.c
+allFiles := Makefile timer.h datagen.c Lab3IO.c Lab3IO.h serialtester.c main.c main1.c main2.c main3.c main4.c main5.c
 objects :=
 headers := timer.h Lab3IO.h
 CFLAGS :=  -Wall -lm
