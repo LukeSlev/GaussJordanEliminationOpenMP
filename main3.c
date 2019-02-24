@@ -20,8 +20,8 @@ int elimination(int num_count) {
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
   cols = rows + 1;
-  // PrintMat(A,rows,cols);
-  // printf("rows %i  \n\n",rows);
+  PrintMat(A,rows,cols);
+  printf("rows %i  \n\n",rows);
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));
@@ -54,20 +54,33 @@ int elimination(int num_count) {
       }
     }
   }
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
+//   PrintMat(A,rows,cols);
+  printf("Before Jordan\n\n");
+    for (i = 0; i < rows; ++i){
+        for (j = 0; j < cols; ++j){
+            printf("%f\t", A[index[i]][j]);
+        }
+        printf("\n");
+    }
+
 
   // Jordan
-  #pragma omp parallel for num_threads(num_count) default(none) shared(A,rows,index) private(k,i)
   for (k=rows-1; k>0;k--){
+    #pragma omp parallel for ordered num_threads(num_count) default(none) shared(A,rows,index,k) private(i)
     for (i=0;i<k;i++){
-      #pragma omp critical
-      {
-         A[index[i]][rows] = A[index[i]][rows] - A[index[i]][k] / A[index[k]][k] * A[index[k]][rows];
-      }
+      A[index[i]][rows] = A[index[i]][rows] - A[index[i]][k] / A[index[k]][k] * A[index[k]][rows];
       A[index[i]][k] = 0;
     }
   }
+
+  printf("After Jordan\n\n");
+    for (i = 0; i < rows; ++i){
+        for (j = 0; j < cols; ++j){
+            printf("%f\t", A[index[i]][j]);
+        }
+        printf("\n");
+    }
+  printf("\n\n");
 
   // last step
   #pragma omp parallel for num_threads(num_count) default(none) shared(A,x,rows,index) private(k)
@@ -76,9 +89,9 @@ int elimination(int num_count) {
 
   GET_TIME(finished);
 
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
-  // PrintVec(x,rows);
+//   PrintMat(A,rows,cols);
+
+  PrintVec(x,rows);
 
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
