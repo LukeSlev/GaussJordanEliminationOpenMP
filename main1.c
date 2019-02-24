@@ -13,12 +13,13 @@ int elimination(int num_threads) {
   double ** A;
   int i,j,k;
   int l, max, idx;
-  int rows;
+  int rows,cols;
   double temp;
   double start, finished;
   double* x;
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
+  cols = rows + 1;
   x = CreateVec(rows);
 
   GET_TIME(start);
