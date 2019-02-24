@@ -12,14 +12,13 @@ int elimination(int num_count) {
   double ** A;
   int i,j,k;
   int l, max, idx;
-  int rows, cols;
+  int rows;
   double temp;
   double start, finished;
   double* x;
   int* index;
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
-  cols = rows + 1;
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));

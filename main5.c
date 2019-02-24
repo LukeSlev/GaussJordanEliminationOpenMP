@@ -12,14 +12,13 @@ int elimination(int num_count) {
   double ** A;
   int i,j,k;
   int l, local_max, local_idx, max, idx;
-  int rows, cols;
+  int rows;
   double temp;
   double start, finished;
   double* x;
   int* index;
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in loading\n"); return 1;}
-  cols = rows + 1;
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));
@@ -29,7 +28,7 @@ int elimination(int num_count) {
   GET_TIME(start);
 
   // Gaussian
-  #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(j,i,local_max,temp,l,k,local_idx)
+  #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,max,idx) private(j,i,local_max,temp,l,k,local_idx)
   {
     for (k=0;k<rows-1;k++) {
       max=0;
