@@ -18,7 +18,7 @@ int elimination(int num_count) {
   double* x;
   int* index;
 
-  if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
+  if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in loading\n"); return 1;}
   cols = rows + 1;
   // PrintMat(A,rows,cols);
   // printf("rows %i  \n\n",rows);
@@ -31,25 +31,29 @@ int elimination(int num_count) {
   GET_TIME(start);
 
   // Gaussian
-  #pragma omp parallel num_threads(num_count) \
-  default(none) shared(A,rows,k,index) private(j,i,temp)
+  #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(k,j,i,temp,l)
   {
     for (k=0;k<rows-1;k++) {
+        max=0;
+        idx=0;
+        #pragma omp for
+        for (l=k;l<rows;l++){
+          #pragma omp critical
+          {
+            if (A[index[l]][k] * A[index[l]][k] > max ) {
+              idx = l;
+              max = A[index[l]][k] * A[index[l]][k];
+            }
+          }
+        }
+
         #pragma omp single
         {
-            max=0;
-            for (l=k, idx = 0;l<rows;l++){
-                if (A[index[l]][k] * A[index[l]][k] > max ) {
-                idx = l;
-                max = A[index[l]][k] * A[index[l]][k];
-                }
-            }
-
-            if (idx != k)/*swap*/{
-                l = index[idx];
-                index[idx] = index[k];
-                index[k] = l;
-            }
+          if (idx != k)/*swap*/{
+              l = index[idx];
+              index[idx] = index[k];
+              index[k] = l;
+          }
         }
 
         #pragma omp for
@@ -62,14 +66,21 @@ int elimination(int num_count) {
     }
     // PrintMat(A,rows,cols);
     // printf("\n\n");
-
+    #pragma omp single
+    {
+      printf("Before Jordan\n\n");
+      for (i = 0; i < rows; ++i){
+          for (j = 0; j < cols; ++j){
+              printf("%f\t", A[index[i]][j]);
+          }
+          printf("\n");
+      }
+    }
     // Jordan
-    #pragma omp for
     for (k=rows-1; k>0;k--){
+        #pragma omp for
         for (i=0;i<k;i++){
-            #pragma omp critical
             A[index[i]][rows] = A[index[i]][rows] - A[index[i]][k] / A[index[k]][k] * A[index[k]][rows];
-            
             A[index[i]][k] = 0;
         }
     }
@@ -77,14 +88,22 @@ int elimination(int num_count) {
     // last step
     #pragma omp for
     for (i=0; i< rows; ++i)
-        x[i] = A[index[i]][rows] / A[index[i]][k];
+        x[i] = A[index[i]][rows] / A[index[i]][i];
   }
 
+  printf("After Jordan\n\n");
+  for (i = 0; i < rows; ++i){
+      for (j = 0; j < cols; ++j){
+          printf("%f\t", A[index[i]][j]);
+      }
+      printf("\n");
+  }
+  printf("\n\n");
   GET_TIME(finished);
 
   // PrintMat(A,rows,cols);
   // printf("\n\n");
-  // PrintVec(x,rows);
+  PrintVec(x,rows);
 
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
