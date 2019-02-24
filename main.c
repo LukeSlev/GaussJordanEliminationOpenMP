@@ -20,8 +20,8 @@ int elimination(int num_count) {
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
   cols = rows + 1;
-  PrintMat(A,rows,cols);
-  printf("rows %i  \n\n",rows);
+  // PrintMat(A,rows,cols);
+  // printf("rows %i  \n\n",rows);
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));
@@ -31,22 +31,25 @@ int elimination(int num_count) {
   GET_TIME(start);
 
   // Gaussian
+  #pragma omp parallel num_threads(num_count) \
+  default(none) shared(A,rows,k,index) private(j,i,temp)
   for (k=0;k<rows-1;k++) {
-    max=0;
-    for (l=k, idx = 0;l<rows;l++){
-      if (A[index[l]][k] * A[index[l]][k] > max ) {
-        idx = l;
-        max = A[index[l]][k] * A[index[l]][k];
+    #pragma omp single
+    {
+      max=0;
+      for (l=k, idx = 0;l<rows;l++){
+        if (A[index[l]][k] * A[index[l]][k] > max ) {
+          idx = l;
+          max = A[index[l]][k] * A[index[l]][k];
+        }
+      }
+
+      if (idx != k)/*swap*/{
+        l = index[idx];
+        index[idx] = index[k];
+        index[k] = l;
       }
     }
-
-    if (idx != k)/*swap*/{
-      l = index[idx];
-      index[idx] = index[k];
-      index[k] = l;
-    }
-    #pragma omp parallel num_threads(num_count) \
-      default(none) shared(A,rows,k,index) private(j,i,temp)
 
     #pragma omp for
     for (i=k+1;i<rows;i++) {
@@ -56,8 +59,8 @@ int elimination(int num_count) {
       }
     }
   }
-  PrintMat(A,rows,cols);
-  printf("\n\n");
+  // PrintMat(A,rows,cols);
+  // printf("\n\n");
 
   // Jordan
   for (k=rows-1; k>0;k--){
@@ -74,9 +77,9 @@ int elimination(int num_count) {
 
   GET_TIME(finished);
 
-  PrintMat(A,rows,cols);
-  printf("\n\n");
-  PrintVec(x,rows);
+  // PrintMat(A,rows,cols);
+  // printf("\n\n");
+  // PrintVec(x,rows);
 
   Lab3SaveOutput(x,rows,finished-start);
   return 0;

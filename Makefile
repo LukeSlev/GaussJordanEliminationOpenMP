@@ -18,7 +18,7 @@ objects :=
 headers := timer.h Lab3IO.h
 CFLAGS :=  -Wall -lm
 threadSan := -fsanitize=thread -g
-LDFLAGS= -pthread -lpthread
+LDFLAGS= -fopenmp
 DEBUGFLAG := -ggdb
 CC := gcc
 # ------------------------------------------------------------
@@ -27,13 +27,13 @@ default: $(headers) main.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main main.o Lab3IO.o
 
 main1: $(headers) main1.o Lab3IO.o
-	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main1 main1.o Lab3IO.o
+	$(CC) -g -Wall -fopenmp -o main1 main1.o Lab3IO.o
 
 main2: $(headers) main2.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main2 main2.o Lab3IO.o
 
 serialtester: serialtester.o Lab3IO.o
-	$(CC) $(LDFLAGS) $(CFLAGS) -o serialtester serialtester.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(CFLAGS) -o serialtester serialtester.o Lab3IO.o -lm
 
 datagen: datagen.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o datagen datagen.o Lab3IO.o
@@ -42,7 +42,7 @@ main.o: main.c
 	$(CC) $(CFLAGS) main.c -c
 
 main1.o: main1.c
-	$(CC) $(CFLAGS) main1.c -c
+	$(CC) $(LDFLAGS) $(CFLAGS) main1.c -c
 
 main2.o: main2.c
 	$(CC) $(CFLAGS) main2.c -c

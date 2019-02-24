@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<pthread.h>
+#include<omp.h>
 
 #include "Lab3IO.h"
 #include "timer.h"
@@ -20,8 +21,8 @@ int elimination(int num_count) {
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
   cols = rows + 1;
-  PrintMat(A,rows,cols);
-  printf("rows %i  \n\n",rows);
+  // PrintMat(A,rows,cols);
+  // printf("rows %i  \n\n",rows);
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));
@@ -46,8 +47,7 @@ int elimination(int num_count) {
       index[k] = l;
     }
 
-    #pragma omp parallel for num_threads(num_count) \
-      default(none) shared(A,rows,k) private(j,i,temp)
+    #pragma omp parallel for num_threads(num_count) default(none) shared(A,rows,k,index) private(j,i,temp)
     for (i=k+1;i<rows;i++) {
       temp = A[index[i]][k] / A[index[k]][k];
       for (j=k;j<rows+1;j++){
@@ -55,8 +55,8 @@ int elimination(int num_count) {
       }
     }
   }
-  PrintMat(A,rows,cols);
-  printf("\n\n");
+  // PrintMat(A,rows,cols);
+  // printf("\n\n");
 
   // Jordan
   for (k=rows-1; k>0;k--){
@@ -72,9 +72,9 @@ int elimination(int num_count) {
 
   GET_TIME(finished);
 
-  PrintMat(A,rows,cols);
-  printf("\n\n");
-  PrintVec(x,rows);
+  // PrintMat(A,rows,cols);
+  // printf("\n\n");
+  // PrintVec(x,rows);
 
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
