@@ -20,8 +20,6 @@ int elimination(int num_count) {
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in loading\n"); return 1;}
   cols = rows + 1;
-  // PrintMat(A,rows,cols);
-  // printf("rows %i  \n\n",rows);
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));
@@ -29,14 +27,6 @@ int elimination(int num_count) {
     index[i] = i;
 
   GET_TIME(start);
-
-  // printf("Before Gaussian\n\n");
-  // for (i = 0; i < rows; ++i){
-  //     for (j = 0; j < cols; ++j){
-  //         printf("%f\t", A[index[i]][j]);
-  //     }
-  //     printf("\n");
-  // }
 
   // Gaussian
   #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(k,j,i,temp,l)
@@ -58,14 +48,6 @@ int elimination(int num_count) {
             index[idx] = index[k];
             index[k] = l;
         }
-
-        // printf("After swap\n\n");
-        // for (i = 0; i < rows; ++i){
-        //     for (j = 0; j < cols; ++j){
-        //         printf("%f\t", A[index[i]][j]);
-        //     }
-        //     printf("\n");
-        // }
       }
 
       #pragma omp for
@@ -77,18 +59,6 @@ int elimination(int num_count) {
         }
     }
     
-    // PrintMat(A,rows,cols);
-    // printf("\n\n");
-    // #pragma omp single
-    // {
-    //   printf("Before Jordan\n\n");
-    //   for (i = 0; i < rows; ++i){
-    //       for (j = 0; j < cols; ++j){
-    //           printf("%f\t", A[index[i]][j]);
-    //       }
-    //       printf("\n");
-    //   }
-    // }
     // Jordan
     for (k=rows-1; k>0;k--){
         #pragma omp for
@@ -104,34 +74,11 @@ int elimination(int num_count) {
         x[i] = A[index[i]][rows] / A[index[i]][i];
   }
 
-  // printf("After Jordan\n\n");
-  // for (i = 0; i < rows; ++i){
-  //     for (j = 0; j < cols; ++j){
-  //         printf("%f\t", A[index[i]][j]);
-  //     }
-  //     printf("\n");
-  // }
-  // printf("\n\n");
   GET_TIME(finished);
-
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
-  // PrintVec(x,rows);
 
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
 }
-
-// int gauss() {
-//   int i;
-
-
-// }
-
-// int jordan() {
-
-// }
-
 
 /*
 Main function

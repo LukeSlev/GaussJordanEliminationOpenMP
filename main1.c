@@ -20,8 +20,6 @@ int elimination(int num_threads) {
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
   cols = rows + 1;
-  // PrintMat(A,rows,cols);
-  // printf("rows %i  \n\n",rows);
   x = CreateVec(rows);
 
   GET_TIME(start);
@@ -49,8 +47,6 @@ int elimination(int num_threads) {
       }
     }
   }
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
 
   // Jordan
   for (k=rows-1; k>0;k--){
@@ -64,10 +60,6 @@ int elimination(int num_threads) {
     x[k] = A[k][rows] / A[k][k];
 
   GET_TIME(finished);
-
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
-  // PrintVec(x,rows);
 
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
@@ -83,16 +75,6 @@ void swap_row(double ***A, int k, int idx, int size) {
     (*A)[idx][i] = temp;
   }
 }
-
-// int gauss() {
-//   int i;
-
-
-// }
-
-// int jordan() {
-
-// }
 
 
 /*

@@ -20,8 +20,6 @@ int elimination(int num_count) {
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in loading\n"); return 1;}
   cols = rows + 1;
-  // PrintMat(A,rows,cols);
-  // printf("rows %i  \n\n",rows);
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));
@@ -29,14 +27,6 @@ int elimination(int num_count) {
     index[i] = i;
 
   GET_TIME(start);
-
-    // printf("Before Gaussian\n\n");
-    // for (i = 0; i < rows; ++i){
-    //     for (j = 0; j < cols; ++j){
-    //         printf("%f\t", A[index[i]][j]);
-    //     }
-    //     printf("\n");
-    // }
 
   // Gaussian
   #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(j,i,local_max,temp,l,k,local_idx)
@@ -101,16 +91,6 @@ int elimination(int num_count) {
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
 }
-
-// int gauss() {
-//   int i;
-
-
-// }
-
-// int jordan() {
-
-// }
 
 
 /*

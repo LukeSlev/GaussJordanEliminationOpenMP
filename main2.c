@@ -20,8 +20,6 @@ int elimination(int num_count) {
 
   if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
   cols = rows + 1;
-  // PrintMat(A,rows,cols);
-  // printf("rows %i  \n\n",rows);
   x = CreateVec(rows);
 
   index = malloc(rows * sizeof(int));
@@ -54,8 +52,6 @@ int elimination(int num_count) {
       }
     }
   }
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
 
   // Jordan
   for (k=rows-1; k>0;k--){
@@ -71,23 +67,9 @@ int elimination(int num_count) {
 
   GET_TIME(finished);
 
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
-  // PrintVec(x,rows);
-
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
 }
-
-// int gauss() {
-//   int i;
-
-
-// }
-
-// int jordan() {
-
-// }
 
 
 /*
