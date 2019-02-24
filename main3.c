@@ -84,8 +84,8 @@ int elimination(int num_count) {
 
   // last step
   #pragma omp parallel for num_threads(num_count) default(none) shared(A,x,rows,index) private(k)
-  for (k=0; k< rows; ++k)
-    x[k] = A[index[k]][rows] / A[index[k]][k];
+  for (i=0; i< rows; ++i)
+    x[i] = A[index[i]][rows] / A[index[i]][i];
 
   GET_TIME(finished);
 
