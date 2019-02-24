@@ -11,14 +11,14 @@ void swap_row(double ***A, int k, int idx, int size);
 int elimination(int num_count) {
   double ** A;
   int i,j,k;
-  int l, max, idx;
+  int l, local_max, local_idx, max, idx;
   int rows, cols;
   double temp;
   double start, finished;
   double* x;
   int* index;
 
-  if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in lodaing\n"); return 1;}
+  if (Lab3LoadInput(&A, &rows) == 1) { printf("Error in loading\n"); return 1;}
   cols = rows + 1;
   // PrintMat(A,rows,cols);
   // printf("rows %i  \n\n",rows);
@@ -30,56 +30,73 @@ int elimination(int num_count) {
 
   GET_TIME(start);
 
+    // printf("Before Gaussian\n\n");
+    // for (i = 0; i < rows; ++i){
+    //     for (j = 0; j < cols; ++j){
+    //         printf("%f\t", A[index[i]][j]);
+    //     }
+    //     printf("\n");
+    // }
+
   // Gaussian
-  #pragma omp parallel num_threads(num_count) \
-  default(none) shared(A,rows,k,index) private(j,i,temp)
-  for (k=0;k<rows-1;k++) {
-    #pragma omp single
-    {
+  #pragma omp parallel num_threads(num_count) default(none) shared(A,rows,x,index,cols,max,idx) private(j,i,local_max,temp,l,k,local_idx)
+  {
+    for (k=0;k<rows-1;k++) {
       max=0;
-      for (l=k, idx = 0;l<rows;l++){
+      idx=0;
+      #pragma omp for schedule(guided)
+      for (l=k;l<rows;l++){
         if (A[index[l]][k] * A[index[l]][k] > max ) {
-          idx = l;
-          max = A[index[l]][k] * A[index[l]][k];
+          local_idx = l;
+          local_max = A[index[l]][k] * A[index[l]][k];
         }
       }
 
-      if (idx != k)/*swap*/{
-        l = index[idx];
-        index[idx] = index[k];
-        index[k] = l;
+      if (local_max > max) {
+        #pragma omp critical
+        {
+          if (local_max > max) {
+            max = local_max;
+            idx = local_idx;
+          }
+        }
+      }
+      #pragma omp barrier
+    
+      #pragma omp single
+      {
+        if (idx != k)/*swap*/{
+            l = index[idx];
+            index[idx] = index[k];
+            index[k] = l;
+        }
+      }
+
+      #pragma omp for schedule(guided)
+      for (i=k+1;i<rows;i++) {
+          temp = A[index[i]][k] / A[index[k]][k];
+          for (j=k;j<rows+1;j++){
+              A[index[i]][j] = A[index[i]][j] - temp * A[index[k]][j];
+          }
       }
     }
+    
+    // Jordan
+    for (k=rows-1; k>0;k--){
+        #pragma omp for schedule(guided)
+        for (i=0;i<k;i++){
+            A[index[i]][rows] = A[index[i]][rows] - A[index[i]][k] / A[index[k]][k] * A[index[k]][rows];
+            A[index[i]][k] = 0;
+        }
+    }
 
+    // last step
     #pragma omp for
-    for (i=k+1;i<rows;i++) {
-      temp = A[index[i]][k] / A[index[k]][k];
-      for (j=k;j<rows+1;j++){
-        A[index[i]][j] = A[index[i]][j] - temp * A[index[k]][j];
-      }
-    }
+    for (i=0; i< rows; ++i)
+        x[i] = A[index[i]][rows] / A[index[i]][i];
   }
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
-
-  // Jordan
-  for (k=rows-1; k>0;k--){
-    for (i=0;i<k;i++){
-      A[index[i]][rows] = A[index[i]][rows] - A[index[i]][k] / A[index[k]][k] * A[index[k]][rows];
-      A[index[i]][k] = 0;
-    }
-  }
-
-  // last step
-  #pragma omp for
-  for (i=0; i< rows; ++i)
-    x[i] = A[index[i]][rows] / A[index[i]][k];
 
   GET_TIME(finished);
-
-  // PrintMat(A,rows,cols);
-  // printf("\n\n");
-  // PrintVec(x,rows);
 
   Lab3SaveOutput(x,rows,finished-start);
   return 0;
