@@ -27,10 +27,16 @@ default: $(headers) main.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main main.o Lab3IO.o
 
 main1: $(headers) main1.o Lab3IO.o
-	$(CC) -g -Wall -fopenmp -o main1 main1.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main1 main1.o Lab3IO.o
 
 main2: $(headers) main2.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main2 main2.o Lab3IO.o
+
+main3: $(headers) main3.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main3 main3.o Lab3IO.o
+
+main4: $(headers) main4.o Lab3IO.o
+	$(CC) $(LDFLAGS) $(DEBUGFLAG) $(CFLAGS) -o main4 main4.o Lab3IO.o
 
 serialtester: serialtester.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o serialtester serialtester.o Lab3IO.o -lm
@@ -39,13 +45,19 @@ datagen: datagen.o Lab3IO.o
 	$(CC) $(LDFLAGS) $(CFLAGS) -o datagen datagen.o Lab3IO.o
 
 main.o: main.c
-	$(CC) $(CFLAGS) main.c -c
+	$(CC) $(LDFLAGS) $(CFLAGS) main.c -c
 
 main1.o: main1.c
 	$(CC) $(LDFLAGS) $(CFLAGS) main1.c -c
 
 main2.o: main2.c
-	$(CC) $(CFLAGS) main2.c -c
+	$(CC) $(LDFLAGS) $(CFLAGS) main2.c -c
+
+main3.o: main3.c
+	$(CC) $(LDFLAGS) $(CFLAGS) main3.c -c
+
+main4.o: main4.c
+	$(CC) $(LDFLAGS) $(CFLAGS) main4.c -c
 
 datagen.o: datagen.c
 	$(CC) $(CFLAGS) datagen.c -c

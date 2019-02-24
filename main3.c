@@ -58,14 +58,19 @@ int elimination(int num_count) {
   // printf("\n\n");
 
   // Jordan
+  #pragma omp parallel for num_threads(num_count) default(none) shared(A,rows,index) private(k,i)
   for (k=rows-1; k>0;k--){
     for (i=0;i<k;i++){
-      A[index[i]][rows] = A[index[i]][rows] - A[index[i]][k] / A[index[k]][k] * A[index[k]][rows];
+      #pragma omp critical
+      {
+         A[index[i]][rows] = A[index[i]][rows] - A[index[i]][k] / A[index[k]][k] * A[index[k]][rows];
+      }
       A[index[i]][k] = 0;
     }
   }
 
   // last step
+  #pragma omp parallel for num_threads(num_count) default(none) shared(A,x,rows,index) private(k)
   for (k=0; k< rows; ++k)
     x[k] = A[index[k]][rows] / A[index[k]][k];
 
