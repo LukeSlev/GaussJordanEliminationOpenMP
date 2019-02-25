@@ -33,7 +33,7 @@ int elimination(int num_count) {
     for (k=0;k<rows-1;k++) {
       max=0;
       idx=0;
-      #pragma omp for schedule(guided)
+      #pragma omp for
       for (l=k;l<rows;l++){
         if (A[index[l]][k] * A[index[l]][k] > max ) {
           local_idx = l;
