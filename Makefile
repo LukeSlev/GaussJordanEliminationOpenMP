@@ -3,12 +3,15 @@
 #   author: Luke Slevinsky, 1453199
 #						Logan McDonald, 1401297
 #
-# Usage: make  // compiles the program server program
+# Usage: make  // compiles the program
+#				 make main1 // compiles the serial program
+#				 make main2 // compiles the 1st parallel iteration
+#				 make main3 // compiles the 2st parallel iteration
+#				 make main4 // compiles the 3rd parallel iteration
+#				 make main5 // compiles the 4th parallel iteration
 #				 make serialtester // compiles the serialtester
 #				 make datagen // compiles the datagen
 #        make tar   	 // create a 'tar.gz' archive of 'allFiles'
-#				 make client // compile client
-#				 make attacker // compile attacker
 #        make clean 	 // remove unneeded files
 # ------------------------------------------------------------
 
